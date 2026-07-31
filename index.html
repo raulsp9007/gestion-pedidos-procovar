@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#1a1a1a">
-    <title>Gestor Pedidos - Simple</title>
+    <title>Gestor Pedidos PROCOVAR</title>
     <style>
         * {
             margin: 0;
@@ -19,6 +19,228 @@
             background: #1a1a1a;
             color: #fff;
             padding: 15px;
+        }
+
+        /* PANTALLA LOGIN */
+        .login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .login-container {
+            background: #2a2a2a;
+            padding: 40px;
+            border-radius: 12px;
+            border: 1px solid #3a3a3a;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .login-logo {
+            text-align: center;
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .login-title {
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 10px;
+            color: #4CAF50;
+        }
+
+        .login-subtitle {
+            text-align: center;
+            color: #888;
+            font-size: 13px;
+            margin-bottom: 30px;
+        }
+
+        .login-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #3a3a3a;
+        }
+
+        .login-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 14px;
+            font-weight: 600;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .login-tab.active {
+            color: #4CAF50;
+            border-bottom-color: #4CAF50;
+        }
+
+        .login-form {
+            display: none;
+        }
+
+        .login-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            color: #aaa;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            background: #1a1a1a;
+            border: 1px solid #3a3a3a;
+            color: #fff;
+            border-radius: 4px;
+            font-size: 16px;
+            min-height: 44px;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.3s;
+            min-height: 44px;
+            touch-action: manipulation;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+
+        button:active {
+            background: #3d8b40;
+        }
+
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+
+        .alert {
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert.success {
+            background: #1b5e20;
+            border-left: 4px solid #4CAF50;
+            color: #c8e6c9;
+        }
+
+        .alert.error {
+            background: #b71c1c;
+            border-left: 4px solid #f44336;
+            color: #ffcdd2;
+        }
+
+        /* APP MAIN */
+        .app-screen {
+            display: none;
+        }
+
+        .app-screen.active {
+            display: block;
+        }
+
+        .navbar {
+            background: #2a2a2a;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 1px solid #3a3a3a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .navbar-brand {
+            font-size: 20px;
+            font-weight: 700;
+            color: #4CAF50;
+        }
+
+        .navbar-user {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .user-info {
+            font-size: 13px;
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .user-role {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        .btn-logout {
+            width: auto;
+            padding: 8px 16px;
+            background: #d32f2f;
+            font-size: 12px;
+            margin: 0;
+            min-height: auto;
         }
 
         .container {
@@ -37,6 +259,24 @@
             .container {
                 grid-template-columns: 1fr;
                 gap: 15px;
+            }
+
+            .navbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .navbar-user {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .user-info {
+                text-align: left;
+            }
+
+            .btn-logout {
+                width: 100%;
             }
         }
 
@@ -69,90 +309,30 @@
             }
         }
 
-        .form-group {
-            margin-bottom: 16px;
+        .config-gestor {
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
         }
 
-        label {
-            display: block;
-            font-size: 12px;
-            color: #aaa;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            font-weight: 600;
+        .config-gestor > div {
+            flex: 1;
         }
 
         @media (max-width: 768px) {
-            .form-group {
-                margin-bottom: 18px;
+            .config-gestor {
+                flex-direction: column;
+                gap: 12px;
+                align-items: stretch;
             }
 
-            label {
-                font-size: 13px;
-                margin-bottom: 10px;
+            .config-gestor > div {
+                flex: unset;
             }
-        }
 
-        input, select {
-            width: 100%;
-            padding: 12px;
-            background: #1a1a1a;
-            border: 1px solid #3a3a3a;
-            color: #fff;
-            border-radius: 4px;
-            font-size: 16px;
-            min-height: 44px;
-            -webkit-appearance: none;
-            appearance: none;
-        }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: #4CAF50;
-            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
-        }
-
-        @media (max-width: 768px) {
-            input, select {
-                padding: 14px;
-                font-size: 18px;
-                min-height: 48px;
-            }
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            background: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: background 0.3s;
-            min-height: 44px;
-            touch-action: manipulation;
-        }
-
-        button:hover {
-            background: #45a049;
-        }
-
-        button:active {
-            background: #3d8b40;
-        }
-
-        button:disabled {
-            background: #666;
-            cursor: not-allowed;
-        }
-
-        @media (max-width: 768px) {
-            button {
-                padding: 16px;
-                font-size: 16px;
-                min-height: 48px;
+            .config-gestor button {
+                width: 100%;
+                margin: 0;
             }
         }
 
@@ -170,11 +350,12 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px;
+            padding: 10px;
             background: #252525;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             border-radius: 3px;
-            font-size: 13px;
+            font-size: 14px;
+            min-height: 40px;
         }
 
         .producto-item button {
@@ -187,6 +368,12 @@
         }
 
         @media (max-width: 768px) {
+            .producto-item {
+                padding: 12px;
+                font-size: 15px;
+                min-height: 44px;
+            }
+
             .producto-item button {
                 padding: 8px 12px;
                 font-size: 14px;
@@ -233,44 +420,6 @@
             }
         }
 
-        tr:hover {
-            background: #252525;
-        }
-
-        .stock-bajo {
-            color: #ff9800;
-            font-weight: 600;
-        }
-
-        .stock-critico {
-            color: #f44336;
-            font-weight: 600;
-        }
-
-        .alert {
-            padding: 12px;
-            border-radius: 4px;
-            margin-bottom: 15px;
-            font-size: 13px;
-            display: none;
-        }
-
-        .alert.show {
-            display: block;
-        }
-
-        .alert.success {
-            background: #1b5e20;
-            border-left: 4px solid #4CAF50;
-            color: #c8e6c9;
-        }
-
-        .alert.error {
-            background: #b71c1c;
-            border-left: 4px solid #f44336;
-            color: #ffcdd2;
-        }
-
         .resumen {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -283,7 +432,7 @@
 
         .stat {
             text-align: center;
-            padding: 8px;
+            padding: 10px;
         }
 
         .stat-valor {
@@ -320,6 +469,16 @@
             }
         }
 
+        .stock-bajo {
+            color: #ff9800;
+            font-weight: 600;
+        }
+
+        .stock-critico {
+            color: #f44336;
+            font-weight: 600;
+        }
+
         .row-full {
             grid-column: 1 / -1;
         }
@@ -350,10 +509,6 @@
             background: #3a3a3a;
         }
 
-        .form-group {
-            position: relative;
-        }
-
         .modal {
             display: none;
             position: fixed;
@@ -361,7 +516,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0, 0, 0, 0.7);
             z-index: 100;
             align-items: center;
             justify-content: center;
@@ -459,168 +614,245 @@
             flex: 1;
         }
 
-        .config-gestor {
-            display: flex;
-            gap: 15px;
-            align-items: flex-end;
+        .hidden {
+            display: none !important;
         }
 
-        .config-gestor > div {
-            flex: 1;
+        .badge-admin {
+            background: #2196F3;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            margin-left: 5px;
         }
 
-        @media (max-width: 768px) {
-            .config-gestor {
-                flex-direction: column;
-                gap: 12px;
-                align-items: stretch;
-            }
-
-            .config-gestor > div {
-                flex: unset;
-            }
-
-            .config-gestor button {
-                width: 100%;
-                margin: 0;
-            }
+        .badge-supervisor {
+            background: #FF9800;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            margin-left: 5px;
         }
 
-        .producto-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            background: #252525;
-            margin-bottom: 8px;
-            border-radius: 3px;
-            font-size: 14px;
-            min-height: 40px;
-        }
-
-        @media (max-width: 768px) {
-            .producto-item {
-                padding: 12px;
-                font-size: 15px;
-                min-height: 44px;
-            }
+        .badge-gestor {
+            background: #4CAF50;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            margin-left: 5px;
         }
     </style>
 </head>
 <body>
-    <!-- PANEL CONFIG GESTOR -->
-    <div class="panel" style="margin-bottom: 20px; background: #1a5f3f;">
-        <div class="config-gestor">
-            <div>
-                <label>👤 Nombre del Gestor</label>
-                <input type="text" id="nombreGestor" placeholder="Tu nombre">
+    <!-- PANTALLA LOGIN -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-container">
+            <div class="login-logo">📦</div>
+            <div class="login-title">PROCOVAR</div>
+            <div class="login-subtitle">Gestor de Pedidos</div>
+
+            <div class="alert" id="loginAlerta"></div>
+
+            <div class="login-tabs">
+                <button class="login-tab active" onclick="cambiarLoginTab('login')">Iniciar Sesión</button>
+                <button class="login-tab" onclick="cambiarLoginTab('admin')">Admin</button>
             </div>
-            <button onclick="guardarNombreGestor()" style="background: #4CAF50;">💾 Guardar</button>
+
+            <!-- Tab Login -->
+            <form class="login-form active" id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="loginEmail" placeholder="tu@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" required>
+                </div>
+                <button type="submit">Entrar</button>
+            </form>
+
+            <!-- Tab Admin -->
+            <form class="login-form" id="adminForm" onsubmit="handleAdminLogin(event)">
+                <div class="form-group">
+                    <label>Contraseña Admin</label>
+                    <input type="password" id="adminPassword" placeholder="••••••••" required>
+                </div>
+                <button type="submit">Acceso Admin</button>
+            </form>
         </div>
     </div>
 
-    <div class="container">
-        <!-- PANEL FORMULARIO -->
-        <div class="panel">
-            <h2>📝 Nuevo Pedido</h2>
-
-            <div class="alert" id="alerta"></div>
-
-            <div class="form-group">
-                <label>Cliente</label>
-                <input type="text" id="cliente" placeholder="Nombre cliente" autocomplete="off">
-                <div class="autocomplete-list" id="clientesList"></div>
+    <!-- PANTALLA APP -->
+    <div class="app-screen" id="appScreen">
+        <!-- NAVBAR -->
+        <div class="navbar">
+            <div class="navbar-brand">📦 PROCOVAR</div>
+            <div class="navbar-user">
+                <div class="user-info">
+                    <div class="user-name" id="navbarUserName">Usuario</div>
+                    <div class="user-role" id="navbarUserRole">Rol</div>
+                </div>
+                <button class="btn-logout" onclick="handleLogout()">Cerrar Sesión</button>
             </div>
-
-            <div class="form-group">
-                <label>Teléfono</label>
-                <input type="tel" id="telefono" placeholder="123-4567">
-            </div>
-
-            <div class="form-group">
-                <label>Tipo Entrega</label>
-                <select id="tipoEntrega">
-                    <option value="retiro">Retiro</option>
-                    <option value="domicilio">Domicilio</option>
-                </select>
-            </div>
-
-            <hr style="border: 1px solid #3a3a3a; margin: 15px 0;">
-
-            <div class="form-group">
-                <label>Producto</label>
-                <select id="producto">
-                    <option value="">-- Seleccionar --</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label>Cantidad</label>
-                <input type="number" id="cantidad" placeholder="0" min="1" value="1">
-            </div>
-
-            <button onclick="agregarProducto()">➕ Agregar Producto</button>
-
-            <div class="productos-agregados" id="productosAgregados"></div>
-
-            <button onclick="confirmarPedido()" style="background: #2196F3;">✅ Confirmar Pedido</button>
-            <button onclick="limpiarForm()" style="background: #666;">🔄 Limpiar</button>
         </div>
 
-        <!-- PANEL INVENTARIO -->
-        <div class="panel">
+        <!-- PANEL CONFIG GESTOR -->
+        <div class="panel" style="margin-bottom: 20px; background: #1a5f3f;" id="panelConfigGestor">
+            <div class="config-gestor">
+                <div>
+                    <label>👤 Nombre del Gestor</label>
+                    <input type="text" id="nombreGestor" placeholder="Tu nombre">
+                </div>
+                <button onclick="guardarNombreGestor()" style="background: #4CAF50;">💾 Guardar</button>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- PANEL FORMULARIO -->
+            <div class="panel" id="panelPedidos">
+                <h2>📝 Nuevo Pedido</h2>
+
+                <div class="alert" id="alerta"></div>
+
+                <div class="form-group">
+                    <label>Cliente</label>
+                    <input type="text" id="cliente" placeholder="Nombre cliente" autocomplete="off">
+                    <div class="autocomplete-list" id="clientesList"></div>
+                </div>
+
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <input type="tel" id="telefono" placeholder="123-4567">
+                </div>
+
+                <div class="form-group">
+                    <label>Tipo Entrega</label>
+                    <select id="tipoEntrega">
+                        <option value="retiro">Retiro</option>
+                        <option value="domicilio">Domicilio</option>
+                    </select>
+                </div>
+
+                <hr style="border: 1px solid #3a3a3a; margin: 15px 0;">
+
+                <div class="form-group">
+                    <label>Producto</label>
+                    <select id="producto">
+                        <option value="">-- Seleccionar --</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Cantidad</label>
+                    <input type="number" id="cantidad" placeholder="0" min="1" value="1">
+                </div>
+
+                <button onclick="agregarProducto()">➕ Agregar Producto</button>
+
+                <div class="productos-agregados" id="productosAgregados"></div>
+
+                <button onclick="confirmarPedido()" style="background: #2196F3;">✅ Confirmar Pedido</button>
+                <button onclick="limpiarForm()" style="background: #666;">🔄 Limpiar</button>
+            </div>
+
+            <!-- PANEL INVENTARIO -->
+            <div class="panel">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+                    <h2 style="margin: 0; border: none; padding: 0; flex: 1; min-width: 200px;">📦 Inventario</h2>
+                    <button onclick="abrirAgregarProducto()" style="width: auto; padding: 8px 16px; background: #4CAF50; margin: 0;">➕ Agregar</button>
+                </div>
+
+                <div class="resumen">
+                    <div class="stat">
+                        <div class="stat-valor" id="totalProductos">0</div>
+                        <div class="stat-label">Productos</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-valor" id="totalUnidades">0</div>
+                        <div class="stat-label">Unidades</div>
+                    </div>
+                    <div class="stat row-full">
+                        <div class="stat-valor" id="productosCriticos">0</div>
+                        <div class="stat-label">Stock Crítico</div>
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Stock</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventarioTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- PANEL PEDIDOS (ANCHO COMPLETO) -->
+        <div class="panel" style="margin-top: 20px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
-                <h2 style="margin: 0; border: none; padding: 0; flex: 1; min-width: 200px;">📦 Inventario</h2>
-                <button onclick="abrirAgregarProducto()" style="width: auto; padding: 8px 16px; background: #4CAF50; margin: 0;">➕ Agregar</button>
+                <h2 style="margin: 0; border: none; padding: 0; flex: 1; min-width: 200px;">📋 Pedidos del Día</h2>
+                <button onclick="abrirExportarPedidos()" style="background: #FF9800; width: auto; padding: 8px 16px; margin: 0;">📤 Enviar Todos</button>
             </div>
-
-            <div class="resumen">
-                <div class="stat">
-                    <div class="stat-valor" id="totalProductos">0</div>
-                    <div class="stat-label">Productos</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-valor" id="totalUnidades">0</div>
-                    <div class="stat-label">Unidades</div>
-                </div>
-                <div class="stat row-full">
-                    <div class="stat-valor" id="productosCriticos">0</div>
-                    <div class="stat-label">Stock Crítico</div>
-                </div>
-            </div>
-
             <table>
                 <thead>
                     <tr>
-                        <th>Código</th>
-                        <th>Stock</th>
-                        <th>Acción</th>
+                        <th>Hora</th>
+                        <th>Cliente</th>
+                        <th>Teléfono</th>
+                        <th>Productos</th>
+                        <th>Entrega</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
-                <tbody id="inventarioTable"></tbody>
+                <tbody id="pedidosTable"></tbody>
+            </table>
+        </div>
+
+        <!-- PANEL ADMIN (Solo visible para Admin) -->
+        <div class="panel" style="margin-top: 20px;" id="panelAdmin">
+            <h2>👥 Gestión de Usuarios</h2>
+            <button onclick="abrirAgregarUsuario()" style="width: auto; padding: 8px 16px; background: #2196F3; margin-bottom: 15px;">➕ Nuevo Usuario</button>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Rol</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="usuariosTable"></tbody>
             </table>
         </div>
     </div>
 
-    <!-- PANEL PEDIDOS (ANCHO COMPLETO) -->
-    <div class="panel" style="margin-top: 20px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
-            <h2 style="margin: 0; border: none; padding: 0; flex: 1; min-width: 200px;">📋 Pedidos del Día</h2>
-            <button onclick="abrirExportarPedidos()" style="background: #FF9800; width: auto; padding: 8px 16px; margin: 0;">📤 Enviar Todos</button>
+    <!-- MODAL AGREGAR USUARIO -->
+    <div class="modal" id="modalAgregarUsuario">
+        <div class="modal-content">
+            <div class="modal-header">➕ Nuevo Usuario</div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="nuevoEmail" placeholder="usuario@email.com">
+            </div>
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" id="nuevoPassword" placeholder="••••••••">
+            </div>
+            <div class="form-group">
+                <label>Rol</label>
+                <select id="nuevoRol">
+                    <option value="gestor">Gestor</option>
+                    <option value="supervisor">Supervisor</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+            <div class="modal-buttons">
+                <button onclick="confirmarAgregarUsuario()" style="background: #4CAF50;">✅ Crear</button>
+                <button onclick="cerrarAgregarUsuario()" style="background: #666;">❌ Cancelar</button>
+            </div>
         </div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Hora</th>
-                    <th>Cliente</th>
-                    <th>Teléfono</th>
-                    <th>Productos</th>
-                    <th>Entrega</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody id="pedidosTable"></tbody>
-        </table>
     </div>
 
     <!-- MODAL EXPORTAR PEDIDOS -->
@@ -655,25 +887,242 @@
     </div>
 
     <script>
-        // DATOS INICIALES
+        // SISTEMA DE USUARIOS Y AUTH
+        let usuarioActual = null;
+        let usuarios = [];
         let inventario = {
             'M300': 50, 'M330': 100, 'P330': 80,
             'P500': 60, 'P1000': 40, 'P1500': 30
         };
-
         let pedidos = [];
         let productosActuales = [];
         let nombreGestorGlobal = 'Gestor Pedidos';
 
-        const productos = Object.keys(inventario);
+        let productos = Object.keys(inventario);
 
         // INICIALIZAR
         function init() {
-            cargarDatos();
-            cargarNombreGestor();
-            renderInventario();
-            renderPedidos();
-            llenarSelectProductos();
+            cargarUsuarios();
+            verificarSesion();
+        }
+
+        function cargarUsuarios() {
+            const saved = localStorage.getItem('procovar_usuarios');
+            if (saved) {
+                usuarios = JSON.parse(saved);
+            } else {
+                usuarios = [
+                    { id: 1, email: 'admin@procovar.com', password: 'admin123', rol: 'admin' }
+                ];
+                guardarUsuarios();
+            }
+        }
+
+        function guardarUsuarios() {
+            localStorage.setItem('procovar_usuarios', JSON.stringify(usuarios));
+        }
+
+        function verificarSesion() {
+            const sesion = localStorage.getItem('procovar_sesion');
+            if (sesion) {
+                usuarioActual = JSON.parse(sesion);
+                mostrarApp();
+                cargarDatos();
+                renderInventario();
+                renderPedidos();
+                llenarSelectProductos();
+                cargarNombreGestor();
+                if (usuarioActual.rol === 'admin') {
+                    renderUsuarios();
+                }
+            } else {
+                mostrarLogin();
+            }
+        }
+
+        function cambiarLoginTab(tab) {
+            document.querySelectorAll('.login-form').forEach(f => f.classList.remove('active'));
+            document.querySelectorAll('.login-tab').forEach(t => t.classList.remove('active'));
+
+            if (tab === 'login') {
+                document.getElementById('loginForm').classList.add('active');
+                document.querySelectorAll('.login-tab')[0].classList.add('active');
+            } else {
+                document.getElementById('adminForm').classList.add('active');
+                document.querySelectorAll('.login-tab')[1].classList.add('active');
+            }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            const usuario = usuarios.find(u => u.email === email && u.password === password);
+            if (usuario) {
+                usuarioActual = usuario;
+                localStorage.setItem('procovar_sesion', JSON.stringify(usuario));
+                mostrarApp();
+                cargarDatos();
+                renderInventario();
+                renderPedidos();
+                llenarSelectProductos();
+                cargarNombreGestor();
+                if (usuario.rol === 'admin') {
+                    renderUsuarios();
+                }
+            } else {
+                mostrarAlertaLogin('Email o contraseña incorrectos', 'error');
+            }
+        }
+
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const password = document.getElementById('adminPassword').value;
+            if (password === 'admin123') {
+                const admin = usuarios.find(u => u.rol === 'admin');
+                if (admin) {
+                    usuarioActual = admin;
+                    localStorage.setItem('procovar_sesion', JSON.stringify(admin));
+                    mostrarApp();
+                    cargarDatos();
+                    renderInventario();
+                    renderPedidos();
+                    llenarSelectProductos();
+                    cargarNombreGestor();
+                    renderUsuarios();
+                }
+            } else {
+                mostrarAlertaLogin('Contraseña admin incorrecta', 'error');
+            }
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('procovar_sesion');
+            usuarioActual = null;
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('adminPassword').value = '';
+            mostrarLogin();
+        }
+
+        function mostrarLogin() {
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('appScreen').classList.remove('active');
+        }
+
+        function mostrarApp() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('appScreen').classList.add('active');
+            document.getElementById('navbarUserName').textContent = usuarioActual.email;
+            document.getElementById('navbarUserRole').textContent = usuarioActual.rol.toUpperCase();
+
+            if (usuarioActual.rol === 'admin') {
+                document.getElementById('panelAdmin').style.display = 'block';
+                document.getElementById('panelConfigGestor').style.display = 'none';
+                document.getElementById('panelPedidos').style.display = 'none';
+            } else if (usuarioActual.rol === 'supervisor') {
+                document.getElementById('panelAdmin').style.display = 'none';
+                document.getElementById('panelConfigGestor').style.display = 'none';
+                document.getElementById('panelPedidos').style.display = 'none';
+            } else {
+                document.getElementById('panelAdmin').style.display = 'none';
+                document.getElementById('panelConfigGestor').style.display = 'block';
+                document.getElementById('panelPedidos').style.display = 'block';
+            }
+        }
+
+        function mostrarAlertaLogin(msg, tipo) {
+            const alerta = document.getElementById('loginAlerta');
+            alerta.textContent = msg;
+            alerta.className = `alert ${tipo} show`;
+            setTimeout(() => alerta.classList.remove('show'), 3000);
+        }
+
+        // GESTIÓN DE USUARIOS (ADMIN)
+        function abrirAgregarUsuario() {
+            document.getElementById('nuevoEmail').value = '';
+            document.getElementById('nuevoPassword').value = '';
+            document.getElementById('nuevoRol').value = 'gestor';
+            document.getElementById('modalAgregarUsuario').classList.add('show');
+        }
+
+        function cerrarAgregarUsuario() {
+            document.getElementById('modalAgregarUsuario').classList.remove('show');
+        }
+
+        function confirmarAgregarUsuario() {
+            const email = document.getElementById('nuevoEmail').value.trim();
+            const password = document.getElementById('nuevoPassword').value;
+            const rol = document.getElementById('nuevoRol').value;
+
+            if (!email || !password) {
+                mostrarAlerta('Ingresa email y contraseña', 'error');
+                return;
+            }
+
+            if (usuarios.find(u => u.email === email)) {
+                mostrarAlerta('Email ya existe', 'error');
+                return;
+            }
+
+            const nuevoUsuario = {
+                id: Math.max(...usuarios.map(u => u.id)) + 1,
+                email,
+                password,
+                rol
+            };
+
+            usuarios.push(nuevoUsuario);
+            guardarUsuarios();
+            renderUsuarios();
+            cerrarAgregarUsuario();
+            mostrarAlerta(`✅ Usuario creado: ${email}`, 'success');
+        }
+
+        function renderUsuarios() {
+            const tbody = document.getElementById('usuariosTable');
+            tbody.innerHTML = usuarios.map(u => `<tr>
+                <td>${u.email}</td>
+                <td><span class="badge-${u.rol}">${u.rol.toUpperCase()}</span></td>
+                <td>
+                    <button onclick="eliminarUsuario(${u.id})" style="width: auto; padding: 4px 8px; background: #d32f2f; font-size: 11px;">❌</button>
+                </td>
+            </tr>`).join('');
+        }
+
+        function eliminarUsuario(id) {
+            if (id === usuarioActual.id) {
+                mostrarAlerta('No puedes eliminar tu propio usuario', 'error');
+                return;
+            }
+
+            if (confirm('¿Eliminar usuario?')) {
+                usuarios = usuarios.filter(u => u.id !== id);
+                guardarUsuarios();
+                renderUsuarios();
+                mostrarAlerta('✅ Usuario eliminado', 'success');
+            }
+        }
+
+        // RESTO DE FUNCIONES (igual que antes)
+        function guardarNombreGestor() {
+            const nombre = document.getElementById('nombreGestor').value.trim();
+            if (!nombre) {
+                mostrarAlerta('Ingresa nombre del gestor', 'error');
+                return;
+            }
+            nombreGestorGlobal = nombre;
+            localStorage.setItem('gestor_nombre', nombre);
+            mostrarAlerta(`✅ Gestor actualizado: ${nombre}`, 'success');
+        }
+
+        function cargarNombreGestor() {
+            const nombre = localStorage.getItem('gestor_nombre');
+            if (nombre) {
+                nombreGestorGlobal = nombre;
+                document.getElementById('nombreGestor').value = nombre;
+            }
         }
 
         function llenarSelectProductos() {
@@ -684,7 +1133,6 @@
             });
         }
 
-        // AUTOCOMPLETE CLIENTES
         document.getElementById('cliente').addEventListener('input', function(e) {
             const valor = e.target.value.toLowerCase();
             const clientesList = document.getElementById('clientesList');
@@ -717,7 +1165,6 @@
             document.getElementById('clientesList').classList.remove('show');
         }
 
-        // AGREGAR PRODUCTO
         function agregarProducto() {
             const producto = document.getElementById('producto').value;
             const cantidad = parseInt(document.getElementById('cantidad').value);
@@ -753,7 +1200,6 @@
             renderProductosAgregados();
         }
 
-        // CONFIRMAR PEDIDO
         function confirmarPedido() {
             const cliente = document.getElementById('cliente').value.trim();
             const telefono = document.getElementById('telefono').value.trim();
@@ -763,12 +1209,10 @@
                 return;
             }
 
-            // Descontar del inventario
             productosActuales.forEach(p => {
                 inventario[p.producto] -= p.cantidad;
             });
 
-            // Crear pedido
             const pedido = {
                 id: Date.now(),
                 fecha: new Date().toLocaleDateString('es-ES'),
@@ -776,7 +1220,8 @@
                 cliente,
                 telefono,
                 productos: [...productosActuales],
-                tipoEntrega: document.getElementById('tipoEntrega').value
+                tipoEntrega: document.getElementById('tipoEntrega').value,
+                gestorId: usuarioActual.id
             };
 
             pedidos.push(pedido);
@@ -796,7 +1241,6 @@
             renderProductosAgregados();
         }
 
-        // RENDER INVENTARIO
         function renderInventario() {
             const tbody = document.getElementById('inventarioTable');
             let totalStock = 0;
@@ -845,15 +1289,12 @@
                 return;
             }
 
-            // Si cambió el código, actualizar
             if (nuevoProducto !== producto) {
                 delete inventario[producto];
-                // Actualizar referencias en productos y pedidos
                 if (productos.includes(producto)) {
                     const idx = productos.indexOf(producto);
                     productos[idx] = nuevoProducto;
                 }
-                // Actualizar en pedidos
                 pedidos.forEach(p => {
                     p.productos.forEach(pr => {
                         if (pr.producto === producto) pr.producto = nuevoProducto;
@@ -869,10 +1310,25 @@
             mostrarAlerta(`✅ Actualizado: ${nuevoProducto} (${nuevoStock} unidades)`, 'success');
         }
 
-        // RENDER PEDIDOS
+        function eliminarProducto(codigo) {
+            if (confirm(`¿Eliminar producto "${codigo}"?\n\nEsta acción no se puede deshacer.`)) {
+                delete inventario[codigo];
+                const idx = productos.indexOf(codigo);
+                if (idx > -1) productos.splice(idx, 1);
+                guardarDatos();
+                llenarSelectProductos();
+                renderInventario();
+                mostrarAlerta(`✅ Producto eliminado: ${codigo}`, 'success');
+            }
+        }
+
         function renderPedidos() {
             const tbody = document.getElementById('pedidosTable');
-            tbody.innerHTML = pedidos.map(p => `<tr>
+            const pedidosFiltrados = usuarioActual.rol === 'gestor'
+                ? pedidos.filter(p => p.gestorId === usuarioActual.id)
+                : pedidos;
+
+            tbody.innerHTML = pedidosFiltrados.map(p => `<tr>
                 <td>${p.hora}</td>
                 <td>${p.cliente}</td>
                 <td>${p.telefono}</td>
@@ -897,7 +1353,6 @@
             const pedido = pedidos.find(p => p.id === id);
             if (!pedido) return;
 
-            // Formatear mensaje
             const productos = pedido.productos.map(p => `${p.producto} × ${p.cantidad}`).join('\n');
             const entrega = pedido.tipoEntrega === 'domicilio' ? '🚚 Domicilio' : '🏪 Retiro';
 
@@ -915,55 +1370,96 @@ ${productos}
 ---
 Gestor Pedidos`;
 
-            // Crear enlace WhatsApp (sin +, solo números)
             const telefonoClean = pedido.telefono.replace(/\D/g, '');
             const whatsappURL = `https://wa.me/${telefonoClean}?text=${encodeURIComponent(mensaje)}`;
 
-            // Abrir en nueva ventana
             window.open(whatsappURL, '_blank');
         }
 
-        // PERSISTENCIA
-        function guardarDatos() {
-            localStorage.setItem('gestor_inventario', JSON.stringify(inventario));
-            localStorage.setItem('gestor_pedidos', JSON.stringify(pedidos));
-        }
+        function abrirExportarPedidos() {
+            const pedidosFiltrados = usuarioActual.rol === 'gestor'
+                ? pedidos.filter(p => p.gestorId === usuarioActual.id)
+                : pedidos;
 
-        function cargarDatos() {
-            const inv = localStorage.getItem('gestor_inventario');
-            const ped = localStorage.getItem('gestor_pedidos');
-            if (inv) inventario = JSON.parse(inv);
-            if (ped) pedidos = JSON.parse(ped);
-        }
-
-        function guardarNombreGestor() {
-            const nombre = document.getElementById('nombreGestor').value.trim();
-            if (!nombre) {
-                mostrarAlerta('Ingresa nombre del gestor', 'error');
+            if (pedidosFiltrados.length === 0) {
+                mostrarAlerta('No hay pedidos para enviar', 'error');
                 return;
             }
-            nombreGestorGlobal = nombre;
-            localStorage.setItem('gestor_nombre', nombre);
-            mostrarAlerta(`✅ Gestor actualizado: ${nombre}`, 'success');
+
+            const checkboxesDiv = document.getElementById('checkboxesPedidos');
+            checkboxesDiv.innerHTML = pedidosFiltrados.map((p, i) => `
+                <div class="checkbox-item">
+                    <input type="checkbox" id="pedido_${i}" value="${i}" checked>
+                    <label for="pedido_${i}" style="margin: 0; cursor: pointer; flex: 1;">
+                        ${p.hora} - ${p.cliente} (${p.productos.map(pr => `${pr.producto}×${pr.cantidad}`).join(', ')})
+                    </label>
+                </div>
+            `).join('');
+
+            document.getElementById('modalExportar').classList.add('show');
         }
 
-        function cargarNombreGestor() {
-            const nombre = localStorage.getItem('gestor_nombre');
-            if (nombre) {
-                nombreGestorGlobal = nombre;
-                document.getElementById('nombreGestor').value = nombre;
+        function cerrarExportarPedidos() {
+            document.getElementById('modalExportar').classList.remove('show');
+        }
+
+        function exportarPedidosSeleccionados() {
+            if (!nombreGestorGlobal || nombreGestorGlobal === '') {
+                mostrarAlerta('Configura nombre del gestor primero', 'error');
+                return;
             }
+
+            const checkboxes = document.querySelectorAll('#checkboxesPedidos input[type="checkbox"]:checked');
+            const pedidosFiltrados = usuarioActual.rol === 'gestor'
+                ? pedidos.filter(p => p.gestorId === usuarioActual.id)
+                : pedidos;
+            const indices = Array.from(checkboxes).map(c => parseInt(c.value));
+
+            if (indices.length === 0) {
+                mostrarAlerta('Selecciona al menos un pedido', 'error');
+                return;
+            }
+
+            const pedidosSeleccionados = indices.map(i => pedidosFiltrados[i]);
+            const retiros = pedidosSeleccionados.filter(p => p.tipoEntrega === 'retiro');
+            const domicilios = pedidosSeleccionados.filter(p => p.tipoEntrega === 'domicilio');
+
+            let mensaje = `📦 Gestor: ${nombreGestorGlobal}\n`;
+            mensaje += `📅 Fecha: ${new Date().toLocaleDateString('es-ES')}\n\n`;
+
+            if (retiros.length > 0) {
+                mensaje += `🏪 RETIROS (${retiros.length} pedidos):\n`;
+                retiros.forEach((p, i) => {
+                    mensaje += `${i + 1}. ${p.cliente}: \n`;
+                    p.productos.forEach(pr => {
+                        mensaje += `${pr.producto}×${pr.cantidad}\n`;
+                    });
+                    mensaje += `------------------------------------\n`;
+                });
+                const totalRet = retiros.reduce((sum, p) => sum + p.productos.reduce((s, pr) => s + pr.cantidad, 0), 0);
+                mensaje += `\n→ Total: ${totalRet} unidades\n\n`;
+            }
+
+            if (domicilios.length > 0) {
+                mensaje += `🚚 DOMICILIOS (${domicilios.length} pedidos):\n`;
+                domicilios.forEach((p, i) => {
+                    mensaje += `${i + 1}. ${p.cliente}: \n`;
+                    p.productos.forEach(pr => {
+                        mensaje += `${pr.producto}×${pr.cantidad}\n`;
+                    });
+                    mensaje += `*************************\n`;
+                });
+                const totalDom = domicilios.reduce((sum, p) => sum + p.productos.reduce((s, pr) => s + pr.cantidad, 0), 0);
+                mensaje += `\n→ Total: ${totalDom} unidades`;
+            }
+
+            const whatsappURL = `https://wa.me/?text=${encodeURIComponent(mensaje)}`;
+
+            cerrarExportarPedidos();
+            mostrarAlerta('✅ Mensaje listo. Abriendo WhatsApp...', 'success');
+            setTimeout(() => window.open(whatsappURL, '_blank'), 500);
         }
 
-        // ALERTAS
-        function mostrarAlerta(msg, tipo) {
-            const alerta = document.getElementById('alerta');
-            alerta.textContent = msg;
-            alerta.className = `alert ${tipo} show`;
-            setTimeout(() => alerta.classList.remove('show'), 3000);
-        }
-
-        // AGREGAR/ELIMINAR PRODUCTOS INVENTARIO
         function abrirAgregarProducto() {
             document.getElementById('nuevoCodigoProducto').value = '';
             document.getElementById('nuevaCantidadProducto').value = '0';
@@ -1003,103 +1499,26 @@ Gestor Pedidos`;
             mostrarAlerta(`✅ Producto agregado: ${codigo}`, 'success');
         }
 
-        function eliminarProducto(codigo) {
-            if (confirm(`¿Eliminar producto "${codigo}"?\n\nEsta acción no se puede deshacer.`)) {
-                delete inventario[codigo];
-                const idx = productos.indexOf(codigo);
-                if (idx > -1) productos.splice(idx, 1);
-                guardarDatos();
-                llenarSelectProductos();
-                renderInventario();
-                mostrarAlerta(`✅ Producto eliminado: ${codigo}`, 'success');
-            }
+        function guardarDatos() {
+            localStorage.setItem('gestor_inventario', JSON.stringify(inventario));
+            localStorage.setItem('gestor_pedidos', JSON.stringify(pedidos));
         }
 
-        // EXPORTAR/ENVIAR PEDIDOS
-        function abrirExportarPedidos() {
-            if (pedidos.length === 0) {
-                mostrarAlerta('No hay pedidos para enviar', 'error');
-                return;
-            }
-
-            const checkboxesDiv = document.getElementById('checkboxesPedidos');
-            checkboxesDiv.innerHTML = pedidos.map((p, i) => `
-                <div class="checkbox-item">
-                    <input type="checkbox" id="pedido_${i}" value="${i}" checked>
-                    <label for="pedido_${i}" style="margin: 0; cursor: pointer; flex: 1;">
-                        ${p.hora} - ${p.cliente} (${p.productos.map(pr => `${pr.producto}×${pr.cantidad}`).join(', ')})
-                    </label>
-                </div>
-            `).join('');
-
-            document.getElementById('modalExportar').classList.add('show');
+        function cargarDatos() {
+            const inv = localStorage.getItem('gestor_inventario');
+            const ped = localStorage.getItem('gestor_pedidos');
+            if (inv) inventario = JSON.parse(inv);
+            if (ped) pedidos = JSON.parse(ped);
+            productos = Object.keys(inventario);
         }
 
-        function cerrarExportarPedidos() {
-            document.getElementById('modalExportar').classList.remove('show');
+        function mostrarAlerta(msg, tipo) {
+            const alerta = document.getElementById('alerta');
+            alerta.textContent = msg;
+            alerta.className = `alert ${tipo} show`;
+            setTimeout(() => alerta.classList.remove('show'), 3000);
         }
 
-        function exportarPedidosSeleccionados() {
-            if (!nombreGestorGlobal || nombreGestorGlobal === '') {
-                mostrarAlerta('Configura nombre del gestor primero', 'error');
-                return;
-            }
-
-            const checkboxes = document.querySelectorAll('#checkboxesPedidos input[type="checkbox"]:checked');
-            const indices = Array.from(checkboxes).map(c => parseInt(c.value));
-
-            if (indices.length === 0) {
-                mostrarAlerta('Selecciona al menos un pedido', 'error');
-                return;
-            }
-
-            const pedidosSeleccionados = indices.map(i => pedidos[i]);
-
-            // Agrupar por tipo entrega
-            const retiros = pedidosSeleccionados.filter(p => p.tipoEntrega === 'retiro');
-            const domicilios = pedidosSeleccionados.filter(p => p.tipoEntrega === 'domicilio');
-
-            // Crear mensaje con nuevo formato
-            let mensaje = `📦 Gestor: ${nombreGestorGlobal}\n`;
-            mensaje += `📅 Fecha: ${new Date().toLocaleDateString('es-ES')}\n\n`;
-
-            // Retiros
-            if (retiros.length > 0) {
-                mensaje += `🏪 RETIROS (${retiros.length} pedidos):\n`;
-                retiros.forEach((p, i) => {
-                    mensaje += `${i + 1}. ${p.cliente}: \n`;
-                    p.productos.forEach(pr => {
-                        mensaje += `${pr.producto}×${pr.cantidad}\n`;
-                    });
-                    mensaje += `------------------------------------\n`;
-                });
-                const totalRet = retiros.reduce((sum, p) => sum + p.productos.reduce((s, pr) => s + pr.cantidad, 0), 0);
-                mensaje += `\n→ Total: ${totalRet} unidades\n\n`;
-            }
-
-            // Domicilios
-            if (domicilios.length > 0) {
-                mensaje += `🚚 DOMICILIOS (${domicilios.length} pedidos):\n`;
-                domicilios.forEach((p, i) => {
-                    mensaje += `${i + 1}. ${p.cliente}: \n`;
-                    p.productos.forEach(pr => {
-                        mensaje += `${pr.producto}×${pr.cantidad}\n`;
-                    });
-                    mensaje += `*************************\n`;
-                });
-                const totalDom = domicilios.reduce((sum, p) => sum + p.productos.reduce((s, pr) => s + pr.cantidad, 0), 0);
-                mensaje += `\n→ Total: ${totalDom} unidades`;
-            }
-
-            // Abrir WhatsApp Web
-            const whatsappURL = `https://wa.me/?text=${encodeURIComponent(mensaje)}`;
-
-            cerrarExportarPedidos();
-            mostrarAlerta('✅ Mensaje listo. Abriendo WhatsApp...', 'success');
-            setTimeout(() => window.open(whatsappURL, '_blank'), 500);
-        }
-
-        // START
         init();
     </script>
 </body>
