@@ -676,6 +676,38 @@
         .panel-supervisor.active, .panel-facturador.active {
             display: block;
         }
+
+        .tabs-estado {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #3a3a3a;
+            flex-wrap: wrap;
+        }
+
+        .tab-estado {
+            padding: 10px 16px;
+            background: none;
+            border: none;
+            color: #888;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+            width: auto;
+            min-height: auto;
+        }
+
+        .tab-estado:hover {
+            color: #4CAF50;
+            background: none;
+        }
+
+        .tab-estado.active {
+            color: #4CAF50;
+            border-bottom-color: #4CAF50;
+        }
     </style>
 </head>
 <body>
@@ -869,7 +901,15 @@
 
         <!-- PANEL SUPERVISOR -->
         <div class="panel panel-supervisor" style="margin-top: 20px;" id="panelSupervisor">
-            <h2>👁️ Pedidos Pendientes de Revisión</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+                <h2 style="margin: 0; border: none; padding: 0; flex: 1; min-width: 200px;">👁️ Revisión de Pedidos</h2>
+                <button onclick="exportarReporteSupervisor()" style="width: auto; padding: 8px 16px; background: #4CAF50; margin: 0;">📊 Reporte</button>
+            </div>
+            <div class="tabs-estado" id="tabsSupervisor">
+                <button class="tab-estado active" onclick="filtrarSupervisor('pendiente')">Pendientes</button>
+                <button class="tab-estado" onclick="filtrarSupervisor('aprobado')">Aprobados</button>
+                <button class="tab-estado" onclick="filtrarSupervisor('todos')">Todos</button>
+            </div>
             <table>
                 <thead>
                     <tr>
@@ -888,7 +928,18 @@
 
         <!-- PANEL FACTURADOR -->
         <div class="panel panel-facturador" style="margin-top: 20px;" id="panelFacturador">
-            <h2>💰 Pedidos Aprobados para Facturación</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+                <h2 style="margin: 0; border: none; padding: 0; flex: 1; min-width: 200px;">💰 Facturación</h2>
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="exportarReporteFacturador()" style="width: auto; padding: 8px 16px; background: #4CAF50; margin: 0;">📊 Reporte</button>
+                    <button onclick="exportarFactura()" style="width: auto; padding: 8px 16px; background: #2196F3; margin: 0;">💾 Descargar</button>
+                </div>
+            </div>
+            <div class="tabs-estado" id="tabsFacturador">
+                <button class="tab-estado active" onclick="filtrarFacturador('aprobado')">Por Facturar</button>
+                <button class="tab-estado" onclick="filtrarFacturador('completado')">Facturados</button>
+                <button class="tab-estado" onclick="filtrarFacturador('todos')">Todos</button>
+            </div>
             <table>
                 <thead>
                     <tr>
@@ -1524,39 +1575,158 @@
             }).join('');
         }
 
+        let filtroSupervisor = 'pendiente';
+        let filtroFacturador = 'aprobado';
+
         function renderSupervisor() {
             const tbody = document.getElementById('supervisorTable');
-            const pendientes = pedidos.filter(p => p.status === 'pendiente');
+            let pedidosFiltrados;
 
-            tbody.innerHTML = pendientes.map(p => `<tr>
-                <td>${p.hora}</td>
-                <td>${p.gestorEmail}</td>
-                <td>${p.cliente}</td>
-                <td>${p.productos.map(pr => `${pr.producto}×${pr.cantidad}`).join(', ')}</td>
-                <td>${p.tipoEntrega === 'domicilio' ? '🚚' : '🏪'}</td>
-                <td><span class="status-pendiente">PENDIENTE</span></td>
-                <td>
-                    <button onclick="aprobarPedido(${p.id})" style="width: auto; padding: 4px 8px; background: #4CAF50; font-size: 11px; margin-right: 3px;">✅ Aprobar</button>
-                    <button onclick="rechazarPedido(${p.id})" style="width: auto; padding: 4px 8px; background: #d32f2f; font-size: 11px;">❌ Rechazar</button>
-                </td>
-            </tr>`).join('');
+            if (filtroSupervisor === 'todos') {
+                pedidosFiltrados = pedidos;
+            } else {
+                pedidosFiltrados = pedidos.filter(p => p.status === filtroSupervisor);
+            }
+
+            tbody.innerHTML = pedidosFiltrados.map(p => {
+                const statusClass = `status-${p.status}`;
+                return `<tr>
+                    <td>${p.hora}</td>
+                    <td>${p.gestorEmail}</td>
+                    <td>${p.cliente}</td>
+                    <td>${p.productos.map(pr => `${pr.producto}×${pr.cantidad}`).join(', ')}</td>
+                    <td>${p.tipoEntrega === 'domicilio' ? '🚚' : '🏪'}</td>
+                    <td><span class="${statusClass}">${p.status.toUpperCase()}</span></td>
+                    <td>
+                        ${p.status === 'pendiente' ? `
+                            <button onclick="aprobarPedido(${p.id})" style="width: auto; padding: 4px 8px; background: #4CAF50; font-size: 11px; margin-right: 3px;">✅</button>
+                            <button onclick="rechazarPedido(${p.id})" style="width: auto; padding: 4px 8px; background: #d32f2f; font-size: 11px;">❌</button>
+                        ` : `
+                            <button onclick="enviarWhatsApp(${p.id})" style="width: auto; padding: 4px 8px; background: #25D366; font-size: 11px;">💬</button>
+                        `}
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        function filtrarSupervisor(estado) {
+            filtroSupervisor = estado;
+            document.querySelectorAll('#tabsSupervisor .tab-estado').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            renderSupervisor();
         }
 
         function renderFacturador() {
             const tbody = document.getElementById('facturadorTable');
-            const aprobados = pedidos.filter(p => p.status === 'aprobado');
+            let pedidosFiltrados;
 
-            tbody.innerHTML = aprobados.map(p => `<tr>
-                <td>${p.hora}</td>
-                <td>${p.gestorEmail}</td>
-                <td>${p.cliente}</td>
-                <td>${p.productos.map(pr => `${pr.producto}×${pr.cantidad}`).join(', ')}</td>
-                <td>${p.tipoEntrega === 'domicilio' ? '🚚' : '🏪'}</td>
-                <td><span class="status-aprobado">APROBADO</span></td>
-                <td>
-                    <button onclick="completarPedido(${p.id})" style="width: auto; padding: 4px 8px; background: #4CAF50; font-size: 11px;">✅ Completar</button>
-                </td>
-            </tr>`).join('');
+            if (filtroFacturador === 'todos') {
+                pedidosFiltrados = pedidos;
+            } else {
+                pedidosFiltrados = pedidos.filter(p => p.status === filtroFacturador);
+            }
+
+            tbody.innerHTML = pedidosFiltrados.map(p => {
+                const statusClass = `status-${p.status}`;
+                return `<tr>
+                    <td>${p.hora}</td>
+                    <td>${p.gestorEmail}</td>
+                    <td>${p.cliente}</td>
+                    <td>${p.productos.map(pr => `${pr.producto}×${pr.cantidad}`).join(', ')}</td>
+                    <td>${p.tipoEntrega === 'domicilio' ? '🚚' : '🏪'}</td>
+                    <td><span class="${statusClass}">${p.status.toUpperCase()}</span></td>
+                    <td>
+                        ${p.status === 'aprobado' ? `
+                            <button onclick="completarPedido(${p.id})" style="width: auto; padding: 4px 8px; background: #4CAF50; font-size: 11px; margin-right: 3px;">✅</button>
+                            <button onclick="enviarWhatsApp(${p.id})" style="width: auto; padding: 4px 8px; background: #25D366; font-size: 11px;">💬</button>
+                        ` : `
+                            <button onclick="enviarWhatsApp(${p.id})" style="width: auto; padding: 4px 8px; background: #25D366; font-size: 11px;">💬</button>
+                        `}
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        function filtrarFacturador(estado) {
+            filtroFacturador = estado;
+            document.querySelectorAll('#tabsFacturador .tab-estado').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            renderFacturador();
+        }
+
+        function exportarReporteSupervisor() {
+            const datos = {
+                fecha: new Date().toISOString(),
+                rol: 'supervisor',
+                pendientes: pedidos.filter(p => p.status === 'pendiente').length,
+                aprobados: pedidos.filter(p => p.status === 'aprobado').length,
+                completados: pedidos.filter(p => p.status === 'completado').length,
+                pedidos: pedidos
+            };
+
+            const json = JSON.stringify(datos, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `reporte-supervisor-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            mostrarAlerta('✅ Reporte descargado', 'success');
+        }
+
+        function exportarReporteFacturador() {
+            const aprobados = pedidos.filter(p => p.status === 'aprobado');
+            const completados = pedidos.filter(p => p.status === 'completado');
+
+            const datos = {
+                fecha: new Date().toISOString(),
+                rol: 'facturador',
+                porFacturar: aprobados.length,
+                facturados: completados.length,
+                totalPorFacturar: aprobados.reduce((sum, p) => sum + p.productos.reduce((s, pr) => s + pr.cantidad, 0), 0),
+                pedidos: pedidos
+            };
+
+            const json = JSON.stringify(datos, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `reporte-facturador-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            mostrarAlerta('✅ Reporte descargado', 'success');
+        }
+
+        function exportarFactura() {
+            const facturados = pedidos.filter(p => p.status === 'completado');
+            if (facturados.length === 0) {
+                mostrarAlerta('No hay pedidos facturados', 'error');
+                return;
+            }
+
+            let csv = 'Fecha,Hora,Cliente,Teléfono,Productos,Cantidad,Tipo Entrega\n';
+            facturados.forEach(p => {
+                const prods = p.productos.map(pr => pr.producto).join(';');
+                const qty = p.productos.map(pr => pr.cantidad).join(';');
+                csv += `${p.fecha},${p.hora},"${p.cliente}",${p.telefono},"${prods}","${qty}",${p.tipoEntrega}\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `facturas-${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            mostrarAlerta('✅ Archivo descargado', 'success');
         }
 
         function aprobarPedido(id) {
