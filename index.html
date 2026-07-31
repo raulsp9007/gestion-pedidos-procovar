@@ -641,6 +641,41 @@
             font-size: 10px;
             margin-left: 5px;
         }
+
+        .status-pendiente {
+            background: #FF9800;
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-aprobado {
+            background: #2196F3;
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-completado {
+            background: #4CAF50;
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .panel-supervisor, .panel-facturador {
+            display: none;
+        }
+
+        .panel-supervisor.active, .panel-facturador.active {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -824,6 +859,44 @@
                     </tr>
                 </thead>
                 <tbody id="usuariosTable"></tbody>
+            </table>
+        </div>
+
+        <!-- PANEL SUPERVISOR -->
+        <div class="panel panel-supervisor" style="margin-top: 20px;" id="panelSupervisor">
+            <h2>👁️ Pedidos Pendientes de Revisión</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Hora</th>
+                        <th>Gestor</th>
+                        <th>Cliente</th>
+                        <th>Productos</th>
+                        <th>Entrega</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="supervisorTable"></tbody>
+            </table>
+        </div>
+
+        <!-- PANEL FACTURADOR -->
+        <div class="panel panel-facturador" style="margin-top: 20px;" id="panelFacturador">
+            <h2>💰 Pedidos Aprobados para Facturación</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Hora</th>
+                        <th>Gestor</th>
+                        <th>Cliente</th>
+                        <th>Productos</th>
+                        <th>Entrega</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="facturadorTable"></tbody>
             </table>
         </div>
     </div>
@@ -1018,26 +1091,28 @@
             document.getElementById('navbarUserName').textContent = usuarioActual.email;
             document.getElementById('navbarUserRole').textContent = usuarioActual.rol.toUpperCase();
 
-            // Mostrar/ocultar paneles según rol
+            // Ocultar todos los paneles por defecto
+            document.getElementById('panelAdmin').style.display = 'none';
+            document.getElementById('panelConfigGestor').style.display = 'none';
+            document.getElementById('panelPedidos').style.display = 'none';
+            document.getElementById('panelSupervisor').classList.remove('active');
+            document.getElementById('panelFacturador').classList.remove('active');
+
+            // Mostrar paneles según rol
             if (usuarioActual.rol === 'admin') {
-                // Admin: ver gestión de usuarios
+                // Admin: gestionar usuarios
                 document.getElementById('panelAdmin').style.display = 'block';
-                document.getElementById('panelConfigGestor').style.display = 'none';
-                document.getElementById('panelPedidos').style.display = 'none';
                 renderUsuarios();
             } else if (usuarioActual.rol === 'supervisor') {
-                // Supervisor: ver todos pedidos (solo lectura)
-                document.getElementById('panelAdmin').style.display = 'none';
-                document.getElementById('panelConfigGestor').style.display = 'none';
-                document.getElementById('panelPedidos').style.display = 'block';
+                // Supervisor: revisar pedidos pendientes
+                document.getElementById('panelSupervisor').classList.add('active');
+                renderSupervisor();
             } else if (usuarioActual.rol === 'facturador') {
-                // Facturador: ver pedidos confirmados para facturación
-                document.getElementById('panelAdmin').style.display = 'none';
-                document.getElementById('panelConfigGestor').style.display = 'none';
-                document.getElementById('panelPedidos').style.display = 'block';
+                // Facturador: facturar pedidos aprobados
+                document.getElementById('panelFacturador').classList.add('active');
+                renderFacturador();
             } else {
-                // Gestores: crear pedidos e inventario
-                document.getElementById('panelAdmin').style.display = 'none';
+                // Gestores: crear pedidos
                 document.getElementById('panelConfigGestor').style.display = 'block';
                 document.getElementById('panelPedidos').style.display = 'block';
             }
@@ -1232,7 +1307,9 @@
                 telefono,
                 productos: [...productosActuales],
                 tipoEntrega: document.getElementById('tipoEntrega').value,
-                gestorId: usuarioActual.id
+                gestorId: usuarioActual.id,
+                status: 'pendiente',
+                gestorEmail: usuarioActual.email
             };
 
             pedidos.push(pedido);
@@ -1339,17 +1416,89 @@
                 ? pedidos.filter(p => p.gestorId === usuarioActual.id)
                 : pedidos;
 
-            tbody.innerHTML = pedidosFiltrados.map(p => `<tr>
+            tbody.innerHTML = pedidosFiltrados.map(p => {
+                const statusClass = `status-${p.status}`;
+                return `<tr>
+                    <td>${p.hora}</td>
+                    <td>${p.cliente}</td>
+                    <td>${p.telefono}</td>
+                    <td>${p.productos.map(pr => `${pr.producto}×${pr.cantidad}`).join(', ')}</td>
+                    <td>${p.tipoEntrega === 'domicilio' ? '🚚' : '🏪'} ${p.tipoEntrega}</td>
+                    <td><span class="${statusClass}">${p.status.toUpperCase()}</span></td>
+                    <td>
+                        ${p.status === 'pendiente' ? `<button onclick="eliminarPedido(${p.id})" style="width: auto; padding: 4px 8px; background: #d32f2f; font-size: 11px;">❌</button>` : `<button onclick="enviarWhatsApp(${p.id})" style="width: auto; padding: 4px 8px; background: #25D366; font-size: 11px;">💬</button>`}
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        function renderSupervisor() {
+            const tbody = document.getElementById('supervisorTable');
+            const pendientes = pedidos.filter(p => p.status === 'pendiente');
+
+            tbody.innerHTML = pendientes.map(p => `<tr>
                 <td>${p.hora}</td>
+                <td>${p.gestorEmail}</td>
                 <td>${p.cliente}</td>
-                <td>${p.telefono}</td>
                 <td>${p.productos.map(pr => `${pr.producto}×${pr.cantidad}`).join(', ')}</td>
-                <td>${p.tipoEntrega === 'domicilio' ? '🚚' : '🏪'} ${p.tipoEntrega}</td>
+                <td>${p.tipoEntrega === 'domicilio' ? '🚚' : '🏪'}</td>
+                <td><span class="status-pendiente">PENDIENTE</span></td>
                 <td>
-                    <button onclick="enviarWhatsApp(${p.id})" style="width: auto; padding: 4px 8px; background: #25D366; font-size: 11px; margin-right: 5px;">💬</button>
-                    <button onclick="eliminarPedido(${p.id})" style="width: auto; padding: 4px 8px; background: #d32f2f; font-size: 11px;">❌</button>
+                    <button onclick="aprobarPedido(${p.id})" style="width: auto; padding: 4px 8px; background: #4CAF50; font-size: 11px; margin-right: 3px;">✅ Aprobar</button>
+                    <button onclick="rechazarPedido(${p.id})" style="width: auto; padding: 4px 8px; background: #d32f2f; font-size: 11px;">❌ Rechazar</button>
                 </td>
             </tr>`).join('');
+        }
+
+        function renderFacturador() {
+            const tbody = document.getElementById('facturadorTable');
+            const aprobados = pedidos.filter(p => p.status === 'aprobado');
+
+            tbody.innerHTML = aprobados.map(p => `<tr>
+                <td>${p.hora}</td>
+                <td>${p.gestorEmail}</td>
+                <td>${p.cliente}</td>
+                <td>${p.productos.map(pr => `${pr.producto}×${pr.cantidad}`).join(', ')}</td>
+                <td>${p.tipoEntrega === 'domicilio' ? '🚚' : '🏪'}</td>
+                <td><span class="status-aprobado">APROBADO</span></td>
+                <td>
+                    <button onclick="completarPedido(${p.id})" style="width: auto; padding: 4px 8px; background: #4CAF50; font-size: 11px;">✅ Completar</button>
+                </td>
+            </tr>`).join('');
+        }
+
+        function aprobarPedido(id) {
+            if (confirm('¿Aprobar este pedido?')) {
+                const pedido = pedidos.find(p => p.id === id);
+                pedido.status = 'aprobado';
+                guardarDatos();
+                renderSupervisor();
+                mostrarAlerta('✅ Pedido aprobado', 'success');
+            }
+        }
+
+        function rechazarPedido(id) {
+            if (confirm('¿Rechazar este pedido?')) {
+                const pedido = pedidos.find(p => p.id === id);
+                // Devolver stock
+                pedido.productos.forEach(pr => {
+                    inventario[pr.producto] += pr.cantidad;
+                });
+                pedidos = pedidos.filter(p => p.id !== id);
+                guardarDatos();
+                renderSupervisor();
+                mostrarAlerta('❌ Pedido rechazado', 'success');
+            }
+        }
+
+        function completarPedido(id) {
+            if (confirm('¿Completar facturación de este pedido?')) {
+                const pedido = pedidos.find(p => p.id === id);
+                pedido.status = 'completado';
+                guardarDatos();
+                renderFacturador();
+                mostrarAlerta('✅ Pedido completado', 'success');
+            }
         }
 
         function eliminarPedido(id) {
