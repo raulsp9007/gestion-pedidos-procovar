@@ -844,9 +844,8 @@
                 <label>Rol</label>
                 <select id="nuevoRol">
                     <option value="gestor">Gestor</option>
-                    <option value="supervisor">Supervisor</option>
-                    <option value="admin">Admin</option>
                 </select>
+                <small style="color: #888; font-size: 11px; margin-top: 5px; display: block;">Admin, Supervisor y Facturador son únicos.</small>
             </div>
             <div class="modal-buttons">
                 <button onclick="confirmarAgregarUsuario()" style="background: #4CAF50;">✅ Crear</button>
@@ -912,7 +911,9 @@
                 usuarios = JSON.parse(saved);
             } else {
                 usuarios = [
-                    { id: 1, email: 'admin@procovar.com', password: 'admin123', rol: 'admin' }
+                    { id: 1, email: 'admin@procovar.com', password: 'admin123', rol: 'admin' },
+                    { id: 2, email: 'supervisor@procovar.com', password: 'sup123', rol: 'supervisor' },
+                    { id: 3, email: 'facturador@procovar.com', password: 'fact123', rol: 'facturador' }
                 ];
                 guardarUsuarios();
             }
@@ -1017,15 +1018,25 @@
             document.getElementById('navbarUserName').textContent = usuarioActual.email;
             document.getElementById('navbarUserRole').textContent = usuarioActual.rol.toUpperCase();
 
+            // Mostrar/ocultar paneles según rol
             if (usuarioActual.rol === 'admin') {
+                // Admin: ver gestión de usuarios
                 document.getElementById('panelAdmin').style.display = 'block';
                 document.getElementById('panelConfigGestor').style.display = 'none';
                 document.getElementById('panelPedidos').style.display = 'none';
+                renderUsuarios();
             } else if (usuarioActual.rol === 'supervisor') {
+                // Supervisor: ver todos pedidos (solo lectura)
                 document.getElementById('panelAdmin').style.display = 'none';
                 document.getElementById('panelConfigGestor').style.display = 'none';
-                document.getElementById('panelPedidos').style.display = 'none';
+                document.getElementById('panelPedidos').style.display = 'block';
+            } else if (usuarioActual.rol === 'facturador') {
+                // Facturador: ver pedidos confirmados para facturación
+                document.getElementById('panelAdmin').style.display = 'none';
+                document.getElementById('panelConfigGestor').style.display = 'none';
+                document.getElementById('panelPedidos').style.display = 'block';
             } else {
+                // Gestores: crear pedidos e inventario
                 document.getElementById('panelAdmin').style.display = 'none';
                 document.getElementById('panelConfigGestor').style.display = 'block';
                 document.getElementById('panelPedidos').style.display = 'block';
