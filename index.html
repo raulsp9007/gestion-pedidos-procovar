@@ -927,6 +927,33 @@
         </div>
     </div>
 
+    <!-- MODAL EDITAR USUARIO -->
+    <div class="modal" id="modalEditarUsuario">
+        <div class="modal-content">
+            <div class="modal-header">✏️ Editar Usuario</div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="editarEmail" placeholder="usuario@email.com" disabled style="opacity: 0.7;">
+            </div>
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" id="editarPassword" placeholder="••••••••">
+                <small style="color: #888; font-size: 11px; margin-top: 5px; display: block;">Dejar vacío para no cambiar.</small>
+            </div>
+            <div class="form-group">
+                <label>Rol</label>
+                <select id="editarRol">
+                    <option value="gestor">Gestor</option>
+                </select>
+                <small style="color: #888; font-size: 11px; margin-top: 5px; display: block;">Admin, Supervisor y Facturador son únicos.</small>
+            </div>
+            <div class="modal-buttons">
+                <button onclick="confirmarEditarUsuario()" style="background: #2196F3;">💾 Guardar</button>
+                <button onclick="cerrarEditarUsuario()" style="background: #666;">❌ Cancelar</button>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL EXPORTAR PEDIDOS -->
     <div class="modal" id="modalExportar">
         <div class="modal-content">
@@ -1172,6 +1199,7 @@
                 <td>${u.email}</td>
                 <td><span class="badge-${u.rol}">${u.rol.toUpperCase()}</span></td>
                 <td>
+                    <button onclick="abrirEditarUsuario(${u.id})" style="width: auto; padding: 4px 8px; background: #2196F3; font-size: 11px; margin-right: 3px;">✏️</button>
                     <button onclick="eliminarUsuario(${u.id})" style="width: auto; padding: 4px 8px; background: #d32f2f; font-size: 11px;">❌</button>
                 </td>
             </tr>`).join('');
@@ -1183,12 +1211,57 @@
                 return;
             }
 
-            if (confirm('¿Eliminar usuario?')) {
+            if (confirm('¿Eliminar usuario? Esta acción no se puede deshacer.')) {
                 usuarios = usuarios.filter(u => u.id !== id);
                 guardarUsuarios();
                 renderUsuarios();
                 mostrarAlerta('✅ Usuario eliminado', 'success');
             }
+        }
+
+        let usuarioEditandoId = null;
+
+        function abrirEditarUsuario(id) {
+            const usuario = usuarios.find(u => u.id === id);
+            if (!usuario) return;
+
+            usuarioEditandoId = id;
+            document.getElementById('editarEmail').value = usuario.email;
+            document.getElementById('editarPassword').value = '';
+            document.getElementById('editarRol').value = usuario.rol;
+
+            document.getElementById('modalEditarUsuario').classList.add('show');
+        }
+
+        function cerrarEditarUsuario() {
+            document.getElementById('modalEditarUsuario').classList.remove('show');
+            usuarioEditandoId = null;
+        }
+
+        function confirmarEditarUsuario() {
+            const usuario = usuarios.find(u => u.id === usuarioEditandoId);
+            if (!usuario) return;
+
+            const password = document.getElementById('editarPassword').value;
+            const rol = document.getElementById('editarRol').value;
+
+            // Actualizar contraseña si se ingresó
+            if (password) {
+                usuario.password = password;
+            }
+
+            // No permitir cambiar rol de usuarios especiales
+            const rolesEspeciales = ['admin', 'supervisor', 'facturador'];
+            if (rolesEspeciales.includes(usuario.rol) && usuario.rol !== rol) {
+                mostrarAlerta('No puedes cambiar el rol de usuarios especiales', 'error');
+                return;
+            }
+
+            usuario.rol = rol;
+            guardarUsuarios();
+            renderUsuarios();
+            cerrarEditarUsuario();
+            mostrarAlerta('✅ Usuario actualizado', 'success');
         }
 
         // RESTO DE FUNCIONES (igual que antes)
