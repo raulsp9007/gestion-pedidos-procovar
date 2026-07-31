@@ -848,8 +848,13 @@
 
         <!-- PANEL ADMIN (Solo visible para Admin) -->
         <div class="panel" style="margin-top: 20px;" id="panelAdmin">
-            <h2>👥 Gestión de Usuarios</h2>
-            <button onclick="abrirAgregarUsuario()" style="width: auto; padding: 8px 16px; background: #2196F3; margin-bottom: 15px;">➕ Nuevo Usuario</button>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+                <h2 style="margin: 0; border: none; padding: 0; flex: 1; min-width: 200px;">👥 Gestión de Usuarios</h2>
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="abrirAgregarUsuario()" style="width: auto; padding: 8px 16px; background: #2196F3; margin: 0;">➕ Nuevo</button>
+                    <button onclick="descargarDatos()" style="width: auto; padding: 8px 16px; background: #4CAF50; margin: 0;">💾 Descargar</button>
+                </div>
+            </div>
             <table>
                 <thead>
                     <tr>
@@ -917,8 +922,10 @@
                 <label>Rol</label>
                 <select id="nuevoRol">
                     <option value="gestor">Gestor</option>
+                    <option value="supervisor">Supervisor (único)</option>
+                    <option value="facturador">Facturador (único)</option>
                 </select>
-                <small style="color: #888; font-size: 11px; margin-top: 5px; display: block;">Admin, Supervisor y Facturador son únicos.</small>
+                <small style="color: #888; font-size: 11px; margin-top: 5px; display: block;">Solo puede haber 1 Supervisor y 1 Facturador.</small>
             </div>
             <div class="modal-buttons">
                 <button onclick="confirmarAgregarUsuario()" style="background: #4CAF50;">✅ Crear</button>
@@ -1179,6 +1186,17 @@
                 return;
             }
 
+            // Validar roles únicos
+            if (rol === 'supervisor' && usuarios.find(u => u.rol === 'supervisor')) {
+                mostrarAlerta('Ya existe un Supervisor', 'error');
+                return;
+            }
+
+            if (rol === 'facturador' && usuarios.find(u => u.rol === 'facturador')) {
+                mostrarAlerta('Ya existe un Facturador', 'error');
+                return;
+            }
+
             const nuevoUsuario = {
                 id: Math.max(...usuarios.map(u => u.id)) + 1,
                 email,
@@ -1188,6 +1206,7 @@
 
             usuarios.push(nuevoUsuario);
             guardarUsuarios();
+            exportarDatosADrive();
             renderUsuarios();
             cerrarAgregarUsuario();
             mostrarAlerta(`✅ Usuario creado: ${email}`, 'success');
@@ -1735,6 +1754,39 @@ Gestor Pedidos`;
         function guardarDatos() {
             localStorage.setItem('gestor_inventario', JSON.stringify(inventario));
             localStorage.setItem('gestor_pedidos', JSON.stringify(pedidos));
+        }
+
+        function descargarDatos() {
+            const datos = {
+                fecha: new Date().toISOString(),
+                usuarios: usuarios,
+                inventario: inventario,
+                pedidos: pedidos
+            };
+
+            const json = JSON.stringify(datos, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `procovar-backup-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            mostrarAlerta('✅ Datos descargados', 'success');
+        }
+
+        function exportarDatosADrive() {
+            // Placeholder: En futuro integrar con Google Drive API
+            // Por ahora solo almacena en localStorage
+            const backup = {
+                usuarios,
+                inventario,
+                pedidos,
+                fecha: new Date().toISOString()
+            };
+            localStorage.setItem('procovar_backup', JSON.stringify(backup));
         }
 
         function cargarDatos() {
